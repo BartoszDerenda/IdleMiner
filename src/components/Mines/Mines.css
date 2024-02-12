@@ -1,0 +1,19 @@
+/* MINE */
+  
+.mine {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    width: 15vw;
+    background-color: antiquewhite;
+    border: 5px ridge rgb(255, 192, 57);
+  }
+
+.mine > button {
+    background-color: rgb(201, 71, 32);
+    border: 2px ridge rgb(255, 146, 57);
+    color: rgb(231, 231, 231);
+    padding: 8%;
+    cursor: pointer;
+  }

@@ -1,0 +1,20 @@
+/* Stats.css */
+
+.stats {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 15vw;
+    padding: 15px;
+    background-color: antiquewhite;
+    border: 5px ridge rgb(255, 192, 57);
+  }
+  
+  .stats-chunk {
+    width: 100%;
+  }
+  
+  .stats-row {
+    display: flex;
+    justify-content: space-between;
+  }

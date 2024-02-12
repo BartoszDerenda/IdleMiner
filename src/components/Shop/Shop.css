@@ -1,0 +1,21 @@
+/* Shop.css */
+
+.shop {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 15vw;
+    padding: 15px;
+    background-color: antiquewhite;
+    border: 5px ridge rgb(255, 192, 57);
+  }
+  
+  .upgrade-tab {
+    width: 100%;
+  }
+  
+  .upgrade-tab > .upgrade {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+  }

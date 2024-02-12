@@ -1,75 +1,8 @@
+/* Main CSS file */
+
 .main-board {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding-top: 50px;
-}
-
-
-
-/* SHOP */
-
-.shop {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 15vw;
-  padding: 15px;
-  background-color: antiquewhite;
-  border: 5px ridge rgb(255, 192, 57);
-}
-
-.upgrade-tab {
-  width: 100%;
-}
-
-.upgrade-tab > .upgrade {
-  display: flex;
-  justify-content: space-between;
-  gap: 15px;
-}
-
-
-
-/* MINES */
-
-.mines {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 15px;
-  width: 15vw;
-  background-color: antiquewhite;
-  border: 5px ridge rgb(255, 192, 57);
-}
-
-.mines > button {
-  background-color: rgb(201, 71, 32);
-  border: 2px ridge rgb(255, 146, 57);
-  color: rgb(231, 231, 231);
-  padding: 8%;
-  cursor: pointer;
-}
-
-
-
-/* STATS */
-
-.stats {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 15vw;
-  padding: 15px;
-  background-color: antiquewhite;
-  border: 5px ridge rgb(255, 192, 57);
-}
-
-.stats-chunk {
-  width: 100%;
-}
-
-.stats-row {
-  display: flex;
-  justify-content: space-between;
 }
