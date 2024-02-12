@@ -1,4 +1,5 @@
 /* Stats.css */
+@import url('../../Palette.css');
 
 .stats {
     display: flex;
@@ -6,15 +7,25 @@
     align-items: center;
     width: 15vw;
     padding: 15px;
-    background-color: antiquewhite;
-    border: 5px ridge rgb(255, 192, 57);
+    background-color: var(--component-background);
+    border: 5px ridge var(--gold);
+    border-right: none;
+
+    > h2 {
+      color: var(--gold);
+    }
   }
   
-  .stats-chunk {
+  .stats-tab {
     width: 100%;
+
+    > h3 {
+      color: var(--gold);
+    }
   }
   
   .stats-row {
     display: flex;
     justify-content: space-between;
+    background-color: var(--component-element);
   }

@@ -1,13 +1,18 @@
 /* MINE */
-  
+@import url('../../Palette.css');
+
 .mine {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 15px;
     width: 15vw;
-    background-color: antiquewhite;
-    border: 5px ridge rgb(255, 192, 57);
+    padding: 15px;
+    background-color: var(--component-background);
+    border: 5px ridge var(--gold);
+
+    > h2 {
+      color: var(--gold);
+    }
   }
 
 .mine > button {

@@ -1,4 +1,18 @@
 /* Main CSS file */
+@import url('Palette.css');
+
+body {
+  box-sizing: border-box;
+  font-family: Nunito-sans, serif;
+  font-weight: normal;
+  font-style: normal;
+
+  color: var(--default-font-color);
+  text-decoration: none;
+  text-shadow: 1px 1px 3px black;
+
+  background-color: var(--body-background);
+}
 
 .main-board {
   display: flex;

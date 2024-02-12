@@ -7,7 +7,7 @@ import OreUpgrade from './components/Shop/upgrades/OreUpgrade';
 import Stats from './components/Stats/Stats';
 
 function App() {
-  const [currency, setCurrency] = useState(10000000);
+  const [currency, setCurrency] = useState(100000000);
 
   const [pickaxe, setPickaxe] = useState({
     power: 1,
@@ -26,7 +26,7 @@ function App() {
   const [ore, setOre] = useState({
     quality: 1,
     quality_cost: 10,
-    gem_chance: 100,
+    gem_chance: 0,
     gem_cost: 25,
     hardness: 3,
     progress: 0,
@@ -101,20 +101,27 @@ function App() {
   /* Mining */
   function handleMining() {
     setOre(prevOre => ({ ...prevOre, progress: prevOre.progress + pickaxe.power }));
-
     if (Math.floor(Math.random() * 100) <= ore.gem_chance) {
-      setCurrency(Math.round(currency + ore.quality));
+      setCurrency(currency + ore.quality / 2);
     }
 
     if (ore.progress >= ore.hardness) {
       for (let i = 0; i < ore.progress; i = i + ore.hardness) {
-        setCurrency(Math.round(currency + ore.quality));
+        setCurrency(currency + ore.quality);
       }
-  
+
       // Use the functional form of setOre to ensure you are working with the most recent state
       setOre(prevOre => ({ ...prevOre, progress: prevOre.progress - ore.hardness }));
     }
   }
+
+  useEffect(() => {
+    if (ore.progress >= ore.hardness) {
+      setCurrency(currency + ore.quality);
+      setOre({...ore, progress: ore.progress - ore.hardness})
+    }
+  }, [currency, ore]
+  );
 
   return (
     <div className='main-board'>

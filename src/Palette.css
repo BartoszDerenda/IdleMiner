@@ -1,0 +1,19 @@
+:root {
+    --gold: #ffbf24;
+    --orange: #ff8800;
+    --default-font-color: #eedfdc;
+
+    --body-background: #601b17;
+    --component-element: #801e1e;
+    --component-background: #9b0b00;
+
+    --red-hover: #c01709;
+    --gray-tooltip: #a49393;
+    --red-notification: #ff1300;
+
+    --common-quality: #09b609;
+    --rare-quality: #1493e1;
+    --epic-quality: #c714c7;
+    --legendary-quality: #ff8800;
+    --ancient-quality: #ab0e0e;
+}

@@ -6,7 +6,7 @@ function Stats({handleMining, ore, currency}) {
     <>
     <progress value={ore.progress} max={ore.hardness}></progress>
     <button onClick={() => handleMining()}>Mine ore</button>
-    <span>Currency: {currency}</span>
+    <span>Currency: {Math.round(currency)}</span>
     </>
   );
 }

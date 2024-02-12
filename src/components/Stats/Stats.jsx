@@ -4,7 +4,7 @@ import './Stats.css';
 function Stats({pickaxe, worker, ore}) {
   return (
     <>
-    <div className='stats-chunk'>
+    <div className='stats-tab'>
         <h3>Pickaxe</h3>
         <div className='stats-row'>
         <span>Power:</span><span>{pickaxe.power}</span>
@@ -17,7 +17,7 @@ function Stats({pickaxe, worker, ore}) {
         </div>
     </div>
 
-    <div className='stats-chunk'>
+    <div className='stats-tab'>
         <h3>Workers</h3>
         <div className='stats-row'>
         <span>Workers:</span><span>{worker.level}</span>
@@ -27,7 +27,7 @@ function Stats({pickaxe, worker, ore}) {
         </div>
     </div>
 
-    <div className='stats-chunk'>
+    <div className='stats-tab'>
         <h3>Ore</h3>
         <div className='stats-row'>
         <span>Ore hardness:</span><span>{Math.round(ore.hardness)}</span>
