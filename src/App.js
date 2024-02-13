@@ -9,6 +9,18 @@ import Stats from './components/Stats/Stats';
 function App() {
   const [currency, setCurrency] = useState(100000000);
 
+  const [drill, setDrill] = useState({
+    isBought: false,
+    drill_cost: 10000,
+    overcharge: false,
+    heat: 0,
+    cooldown: false,
+    coolant: 1,
+    coolant_cost: 750,
+    heat_cap: 100,
+    heat_cap_cost: 500, 
+  })
+
   const [pickaxe, setPickaxe] = useState({
     power: 1,
     power_cost: 10,
@@ -32,19 +44,67 @@ function App() {
     progress: 0,
   });
 
+
   /* Worker */
   /* Auto-mining */
   useEffect(() => {
     if (worker.level > 0) {
-      const intervalId = setInterval(() => {
+      const miningIntervalId = setInterval(() => {
         for (let i = 0; i < worker.level; i++) {
           handleMining();
         }
       }, 1000 / worker.speed);
 
-      return () => clearInterval(intervalId);
+      return () => clearInterval(miningIntervalId);
     }
   });
+
+
+  /* Drill mining */
+  /* onScroll version */
+  const handleScroll = () => {
+    if (drill.isBought && !drill.cooldown) {
+      setDrill(prevDrill => ({ ...prevDrill, heat: prevDrill.heat + 1 }));
+      handleMining();
+    }
+  };
+
+
+  /* Drill heat management */
+  useEffect(() => {
+    if (drill.heat > 0 && drill.heat < drill.heat_cap) {
+      const heatintervalId = setInterval(() => {
+        setDrill(prevDrill => ({
+          ...prevDrill,
+          heat: Math.max(0, prevDrill.heat - 1)
+        }));
+        console.log(drill.heat);
+
+        // once heat reaches 0 and drill is on cooldown, reset it
+        if (drill.heat === 0 && drill.cooldown) {
+          setDrill(prevDrill => ({
+            ...prevDrill,
+            cooldown: false
+          }));
+        }
+
+      }, 250 / drill.coolant);
+      return () => clearInterval(heatintervalId);
+      
+    } else {
+      // if drill overheats, set it on a cooldown
+      if (drill.heat >= drill.heat_cap) {
+        console.log('uh oh');
+        setDrill(prevDrill => ({
+          ...prevDrill,
+          cooldown: true,
+          heat: prevDrill.heat - 1 // prevents an infinite loop
+        }));
+      };
+    }
+
+  }, [drill]);
+
 
   /* Upgrades */
   function handleUpgrade(cost, token) {
@@ -62,6 +122,26 @@ function App() {
         setPickaxe({ ...pickaxe, 
           multistrike: pickaxe.multistrike + 1, 
           multi_cost: Math.round(pickaxe.multi_cost * 1.1) 
+        });
+      }
+
+      if (token === 'drill') {
+        setDrill({...drill, 
+          isBought: true
+        });
+      }
+
+      if (token === 'coolant') {
+        setDrill({...drill, 
+          coolant: drill.coolant + 0.25,
+          coolant_cost: Math.round(drill.coolant_cost * 1.1)
+        });
+      }
+
+      if (token === 'heat_cap') {
+        setDrill({...drill, 
+          heat_cap: drill.heat_cap + 10,
+          heat_cap_cost: Math.round(drill.heat_cap_cost * 1.1)
         });
       }
       
@@ -104,17 +184,15 @@ function App() {
     if (Math.floor(Math.random() * 100) <= ore.gem_chance) {
       setCurrency(currency + ore.quality / 2);
     }
-
     if (ore.progress >= ore.hardness) {
       for (let i = 0; i < ore.progress; i = i + ore.hardness) {
         setCurrency(currency + ore.quality);
       }
-
-      // Use the functional form of setOre to ensure you are working with the most recent state
       setOre(prevOre => ({ ...prevOre, progress: prevOre.progress - ore.hardness }));
     }
   }
 
+  /* Checks if you have finished mining the ore */
   useEffect(() => {
     if (ore.progress >= ore.hardness) {
       setCurrency(currency + ore.quality);
@@ -128,19 +206,19 @@ function App() {
 
       <div className='shop'>
         <h2>SHOP</h2>
-        <PickaxeUpgrade handleUpgrade={handleUpgrade} pickaxe={pickaxe} />
+        <PickaxeUpgrade handleUpgrade={handleUpgrade} pickaxe={pickaxe} drill={drill} />
         <WorkerUpgrade handleUpgrade={handleUpgrade} worker={worker} />
         <OreUpgrade handleUpgrade={handleUpgrade} ore={ore} />
       </div>
 
-      <div className='mine'>
+      <div className='mine' onWheel={handleScroll}>
         <h2>MINE</h2>
         <Mines handleMining={handleMining} ore={ore} currency={currency} />
       </div>
 
       <div className='stats'>
         <h2>STATS</h2>
-        <Stats pickaxe={pickaxe} worker={worker} ore={ore}/>
+        <Stats pickaxe={pickaxe} drill={drill} worker={worker} ore={ore}/>
       </div>
       
     </div>

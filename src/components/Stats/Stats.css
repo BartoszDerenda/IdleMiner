@@ -27,5 +27,4 @@
   .stats-row {
     display: flex;
     justify-content: space-between;
-    background-color: var(--component-element);
   }

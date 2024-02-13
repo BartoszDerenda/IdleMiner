@@ -1,11 +1,11 @@
 // components/Stats/Stats.jsx
 import './Stats.css';
 
-function Stats({pickaxe, worker, ore}) {
+function Stats({pickaxe, drill, worker, ore}) {
   return (
     <>
     <div className='stats-tab'>
-        <h3>Pickaxe</h3>
+        {drill.isBought ? (<h3>Drill</h3>) : (<h3>Pickaxe</h3>)}
         <div className='stats-row'>
         <span>Power:</span><span>{pickaxe.power}</span>
         </div>
@@ -13,8 +13,18 @@ function Stats({pickaxe, worker, ore}) {
         <span>Multistrike:</span><span>{pickaxe.multistrike}x</span>
         </div>
         <div className='stats-row'>
-        <span>Swing strength:</span><span>{pickaxe.power * pickaxe.multistrike}</span>
+        <span>{drill.isBought ? ('Drill') : ('Swing')} strength:</span><span>{pickaxe.power * pickaxe.multistrike}</span>
         </div>
+        {drill.isBought && (
+          <>
+          <div className='stats-row'>
+          <span>Coolant potency:</span><span>{drill.coolant * 100}%</span>
+          </div>
+          <div className='stats-row'>
+          <span>Heat capacity:</span><span>{drill.heat_cap}</span>
+          </div>
+          </>
+        )}
     </div>
 
     <div className='stats-tab'>
