@@ -1,10 +1,17 @@
 /* MINE */
 @import url('../../Palette.css');
 
+
+.mine-box {
+  display: flex;
+  align-items: center;
+}
+
 .mine {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 10px;
     width: 15vw;
     padding: 15px;
     background-color: var(--component-background);
@@ -15,10 +22,66 @@
     }
   }
 
+
+
+/* Mine */
 .mine > button {
-    background-color: rgb(201, 71, 32);
-    border: 2px ridge rgb(255, 146, 57);
-    color: rgb(231, 231, 231);
-    padding: 8%;
-    cursor: pointer;
-  }
+  background-color: var(--component-element);
+  border: 3px ridge var(--gold);
+  color: rgb(231, 231, 231);
+  padding: 8%;
+}
+
+.pickaxe {
+  cursor: pointer;
+}
+
+.drill {
+  cursor: s-resize;
+}
+
+
+
+/* HeatMeter */
+.heat-meter-box {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  width: 4vw;
+  padding: 15px;
+  gap: 2px;
+  background-color: var(--component-background);
+  border: 4px ridge var(--gold);
+  border-left: none;
+}
+
+.heat-pip {
+  background-color: rgba(80, 80, 80, 0.39);
+  border-radius: 6px;
+  width: 100%;
+  height: 25px;
+}
+
+.heat-1 {
+  background-color: rgb(211, 235, 0);
+}
+
+.heat-20 {
+  background-color: rgb(196, 193, 1);
+}
+
+.heat-40 {
+  background-color: rgb(255, 217, 0);
+}
+
+.heat-60 {
+  background-color: rgb(255, 123, 0);
+}
+
+.heat-80 {
+  background-color: rgb(255, 0, 0);
+}
+
+.heat-100 {
+  background-color: rgb(255, 255, 255);
+}

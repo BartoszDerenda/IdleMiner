@@ -14,9 +14,14 @@ body {
   background-color: var(--body-background);
 }
 
-.main-board {
+.main-box {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding-top: 50px;
+}
+
+.currency-align {
+  display: flex;
+  align-items: center;
 }

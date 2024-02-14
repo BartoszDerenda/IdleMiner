@@ -1,6 +1,7 @@
 import './App.css';
 import { useState, useEffect } from 'react';
 import Mines from './components/Mines/Mines';
+import HeatMeter from './components/Mines/HeatMeter';
 import PickaxeUpgrade from './components/Shop/upgrades/PickaxeUpgrade';
 import WorkerUpgrade from './components/Shop/upgrades/WorkerUpgrade';
 import OreUpgrade from './components/Shop/upgrades/OreUpgrade';
@@ -62,7 +63,7 @@ function App() {
 
   /* Drill mining */
   /* onScroll version */
-  const handleScroll = () => {
+  const handleDrill = () => {
     if (drill.isBought && !drill.cooldown) {
       setDrill(prevDrill => ({ ...prevDrill, heat: prevDrill.heat + 1 }));
       handleMining();
@@ -78,29 +79,26 @@ function App() {
           ...prevDrill,
           heat: Math.max(0, prevDrill.heat - 1)
         }));
-        console.log(drill.heat);
-
-        // once heat reaches 0 and drill is on cooldown, reset it
-        if (drill.heat === 0 && drill.cooldown) {
-          setDrill(prevDrill => ({
-            ...prevDrill,
-            cooldown: false
-          }));
-        }
-
       }, 250 / drill.coolant);
       return () => clearInterval(heatintervalId);
       
     } else {
       // if drill overheats, set it on a cooldown
       if (drill.heat >= drill.heat_cap) {
-        console.log('uh oh');
         setDrill(prevDrill => ({
           ...prevDrill,
           cooldown: true,
           heat: prevDrill.heat - 1 // prevents an infinite loop
         }));
       };
+    }
+
+    // once heat reaches 0 and drill is on cooldown, set cooldown to false
+    if (drill.heat === 0 && drill.cooldown) {
+      setDrill(prevDrill => ({
+        ...prevDrill,
+        cooldown: false
+      }));
     }
 
   }, [drill]);
@@ -114,14 +112,14 @@ function App() {
       if (token === 'power') {
         setPickaxe({ ...pickaxe, 
           power: pickaxe.power + 1, 
-          power_cost: Math.round(pickaxe.power_cost * 1.1) 
+          power_cost: Math.round(pickaxe.power_cost * 1.15) 
         });
       }
 
       if (token === 'multistrike') {
         setPickaxe({ ...pickaxe, 
           multistrike: pickaxe.multistrike + 1, 
-          multi_cost: Math.round(pickaxe.multi_cost * 1.1) 
+          multi_cost: Math.round(pickaxe.multi_cost * 1.15) 
         });
       }
 
@@ -134,36 +132,36 @@ function App() {
       if (token === 'coolant') {
         setDrill({...drill, 
           coolant: drill.coolant + 0.25,
-          coolant_cost: Math.round(drill.coolant_cost * 1.1)
+          coolant_cost: Math.round(drill.coolant_cost * 1.15)
         });
       }
 
       if (token === 'heat_cap') {
         setDrill({...drill, 
           heat_cap: drill.heat_cap + 10,
-          heat_cap_cost: Math.round(drill.heat_cap_cost * 1.1)
+          heat_cap_cost: Math.round(drill.heat_cap_cost * 1.15)
         });
       }
       
       if (token === 'worker') {
         setWorker({ ...worker, 
           level: worker.level + 1, 
-          level_cost: Math.round(worker.level_cost * 1.1) 
+          level_cost: Math.round(worker.level_cost * 1.15) 
         });
       }
 
       if (token === 'speed') {
         setWorker({ ...worker, 
           speed: worker.speed + 0.1, 
-          speed_cost: Math.round(worker.speed_cost * 1.1) 
+          speed_cost: Math.round(worker.speed_cost * 1.15) 
         });
       }
 
       if (token === 'quality') {
         setOre({ ...ore, 
-          quality: ore.quality + 1,
-          quality_cost: Math.round(ore.quality_cost * 1.1), 
-          hardness: ore.hardness * 1.1, 
+          quality: ore.quality * 1.175,
+          quality_cost: Math.round(ore.quality_cost * 1.15), 
+          hardness: ore.hardness * 1.15, 
           progress: 0 
         });
       }
@@ -171,7 +169,7 @@ function App() {
       if (token === 'gems') {
         setOre({ ...ore, 
           gem_chance: ore.gem_chance + 0.25,
-          gem_cost: Math.round(ore.gem_cost * 1.1), 
+          gem_cost: Math.round(ore.gem_cost * 1.15), 
         });
       }
 
@@ -180,7 +178,7 @@ function App() {
 
   /* Mining */
   function handleMining() {
-    setOre(prevOre => ({ ...prevOre, progress: prevOre.progress + pickaxe.power }));
+    setOre(prevOre => ({ ...prevOre, progress: prevOre.progress + (pickaxe.power * pickaxe.multistrike) }));
     if (Math.floor(Math.random() * 100) <= ore.gem_chance) {
       setCurrency(currency + ore.quality / 2);
     }
@@ -202,21 +200,26 @@ function App() {
   );
 
   return (
-    <div className='main-board'>
+    <div className='main-box'>
 
-      <div className='shop'>
+      <div className='shop-box'>
         <h2>SHOP</h2>
         <PickaxeUpgrade handleUpgrade={handleUpgrade} pickaxe={pickaxe} drill={drill} />
         <WorkerUpgrade handleUpgrade={handleUpgrade} worker={worker} />
         <OreUpgrade handleUpgrade={handleUpgrade} ore={ore} />
       </div>
 
-      <div className='mine' onWheel={handleScroll}>
-        <h2>MINE</h2>
-        <Mines handleMining={handleMining} ore={ore} currency={currency} />
+      <div className='mine-box'>
+        <div className='mine'>
+          <h2>MINE</h2>
+          <Mines handleMining={handleMining} handleDrill={handleDrill} ore={ore} currency={currency} drill={drill} />
+        </div>
+        <div className='heat-meter'>
+          <HeatMeter drill={drill} />
+        </div>
       </div>
 
-      <div className='stats'>
+      <div className='stats-box'>
         <h2>STATS</h2>
         <Stats pickaxe={pickaxe} drill={drill} worker={worker} ore={ore}/>
       </div>
