@@ -12,9 +12,15 @@ function HeatPip({drill, heatTreshold}) {
         if (1 < heatPercentage < 20) {
             className = `heat-pip heat-1`;
         }
+        
         // for 20% - 80% cases
         for (let i = 1; i <= heat; i++) {
             className = `heat-pip heat-${i * interval}`;
+        }
+
+        // stay red untill done cooling off
+        if (drill.cooldown) {
+          className = 'heat-pip heat-80';
         }
       }
 

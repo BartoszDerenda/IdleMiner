@@ -7,6 +7,10 @@
     --component-element: #801e1e;
     --component-background: #9b0b00;
 
+    --toggle-on: #c70a0a;
+    --toggle-off: #601b17;
+    --toggle-marble: #eedfdc;
+
     --red-hover: #c01709;
     --gray-tooltip: #a49393;
     --red-notification: #ff1300;

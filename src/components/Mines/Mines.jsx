@@ -1,6 +1,6 @@
 // components/Mines/Mines.jsx
 import './Mines.css';
-import currencyIcon from '../../gold.png';
+import currencyIcon from '@/gold.png';
 
 function Mine({handleMining, handleDrill, ore, currency, drill}) {
   return (

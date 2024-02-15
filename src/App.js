@@ -1,14 +1,14 @@
+// App
 import './App.css';
 import { useState, useEffect } from 'react';
-import Mines from './components/Mines/Mines';
-import HeatMeter from './components/Mines/HeatMeter';
-import PickaxeUpgrade from './components/Shop/upgrades/PickaxeUpgrade';
-import WorkerUpgrade from './components/Shop/upgrades/WorkerUpgrade';
-import OreUpgrade from './components/Shop/upgrades/OreUpgrade';
-import Stats from './components/Stats/Stats';
+import Mines from '@/components/Mines/Mines';
+import HeatMeter from '@/components/Mines/HeatMeter';
+import Shop from '@/components/Shop/Shop';
+import Stats from '@/components/Stats/Stats';
 
 function App() {
   const [currency, setCurrency] = useState(100000000);
+  const [shopToggle, setShopToggle] = useState(false);
 
   const [drill, setDrill] = useState({
     isBought: false,
@@ -176,6 +176,11 @@ function App() {
     }
   }
 
+  /* Turns on and off the ability to buy stuff using your mouse scroll */
+  function handleShopToggle() {
+    setShopToggle(!shopToggle);
+  }
+
   /* Mining */
   function handleMining() {
     setOre(prevOre => ({ ...prevOre, progress: prevOre.progress + (pickaxe.power * pickaxe.multistrike) }));
@@ -204,9 +209,7 @@ function App() {
 
       <div className='shop-box'>
         <h2>SHOP</h2>
-        <PickaxeUpgrade handleUpgrade={handleUpgrade} pickaxe={pickaxe} drill={drill} />
-        <WorkerUpgrade handleUpgrade={handleUpgrade} worker={worker} />
-        <OreUpgrade handleUpgrade={handleUpgrade} ore={ore} />
+        <Shop handleUpgrade={handleUpgrade} handleShopToggle={handleShopToggle} shopToggle={shopToggle} pickaxe={pickaxe} drill={drill} worker={worker} ore={ore} />
       </div>
 
       <div className='mine-box'>
@@ -214,9 +217,11 @@ function App() {
           <h2>MINE</h2>
           <Mines handleMining={handleMining} handleDrill={handleDrill} ore={ore} currency={currency} drill={drill} />
         </div>
+        {drill.isBought && (
         <div className='heat-meter'>
           <HeatMeter drill={drill} />
         </div>
+        )}
       </div>
 
       <div className='stats-box'>
