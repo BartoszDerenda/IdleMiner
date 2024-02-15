@@ -1,10 +1,10 @@
 // App
 import './App.css';
 import { useState, useEffect } from 'react';
-import Mines from '@/components/Mines/Mines';
-import HeatMeter from '@/components/Mines/HeatMeter';
-import Shop from '@/components/Shop/Shop';
-import Stats from '@/components/Stats/Stats';
+import Shop from './components/Shop/Shop';
+import Mines from './components/Mines/Mines';
+import HeatMeter from './components/Mines/HeatMeter';
+import Stats from './components/Stats/Stats';
 
 function App() {
   const [currency, setCurrency] = useState(100000000);
