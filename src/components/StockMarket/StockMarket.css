@@ -1,0 +1,24 @@
+/* StockMarket.css */
+@import url('../../Palette.css');
+
+.stock-market-table {
+    width: 80%;
+    padding: 0 15px 10px 15px;
+    background-color: var(--component-background);
+    border: 5px ridge var(--gold);
+    border-bottom: none;
+}
+
+h3 {
+    color: var(--gold);
+}
+
+button {
+    color: var(--default-font-color);
+    background-color: var(--component-element);
+    padding: 5px 10px 5px 10px;
+}
+
+.stock-listing {
+
+}

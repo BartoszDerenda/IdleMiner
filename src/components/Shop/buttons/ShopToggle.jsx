@@ -1,3 +1,4 @@
+// components/Shop/buttons/ShopToggle.jsx
 import Toggle from 'react-toggle';
 import './ShopToggle.css';
 

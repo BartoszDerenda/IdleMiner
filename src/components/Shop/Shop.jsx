@@ -1,4 +1,4 @@
-// components/Shop/upgrades/OreUpgrade.jsx
+// components/Shop/Shop.jsx
 import PickaxeUpgrade from './upgrades/PickaxeUpgrade';
 import WorkerUpgrade from './upgrades/WorkerUpgrade';
 import OreUpgrade from './upgrades/OreUpgrade';

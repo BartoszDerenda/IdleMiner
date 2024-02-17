@@ -1,15 +1,49 @@
-// App
+// App.js
 import './App.css';
 import { useState, useEffect } from 'react';
 import Shop from './components/Shop/Shop';
 import Mines from './components/Mines/Mines';
 import HeatMeter from './components/Mines/HeatMeter';
 import Stats from './components/Stats/Stats';
+import StockMarket from './components/StockMarket/StockMarket';
 
 function App() {
   const [currency, setCurrency] = useState(100000000);
-  const [shopToggle, setShopToggle] = useState(false);
 
+  const [coalCompany, setCoalCompany] = useState({
+    name: 'Coal Co.',
+    token: 'coal',
+    total_stock: 100000,
+    unavailable_stock: 987,
+    possessed_stock: 1000,
+    difference: 0,
+    history: [],
+    cost: 25,
+  });
+
+  const [mithrilCompany, setMithrilCompany] = useState({
+    name: 'Mithril Brothers',
+    token: 'mithril',
+    total_stock: 100000,
+    unavailable_stock: 123,
+    possessed_stock: 1000,
+    difference: 0,
+    history: [],
+    cost: 50,
+  });
+
+  const [rubyCompany, setRubyCompany] = useState({
+    name: 'Ruby Corp.',
+    token: 'ruby',
+    total_stock: 100000,
+    unavailable_stock: 2983,
+    possessed_stock: 1000,
+    difference: 0,
+    history: [],
+    cost: 125,
+  });
+
+  const [shopToggle, setShopToggle] = useState(false);
   const [drill, setDrill] = useState({
     isBought: false,
     drill_cost: 10000,
@@ -20,7 +54,7 @@ function App() {
     coolant_cost: 750,
     heat_cap: 100,
     heat_cap_cost: 500, 
-  })
+  });
 
   const [pickaxe, setPickaxe] = useState({
     power: 1,
@@ -44,6 +78,102 @@ function App() {
     hardness: 3,
     progress: 0,
   });
+
+
+  /* Stock market */
+  function handleCompany(company) {
+    let x = 2;
+    const updatedHistory = [...company.history, company.cost];
+    const truncatedHistory = updatedHistory.slice(-10);
+    const updatedCost = company.cost + x;
+    const calc_difference = ((updatedCost - company.cost) / company.cost) * 100
+
+    switch (company) {
+
+      case coalCompany:
+        setCoalCompany(prevCoal => ({...prevCoal, difference: calc_difference.toFixed(2), history: truncatedHistory, cost: updatedCost}));
+        break;
+
+      case mithrilCompany:
+        setMithrilCompany(prevMithril => ({...prevMithril, difference: calc_difference.toFixed(2), history: truncatedHistory, cost: updatedCost}));
+        break;
+        
+      default:
+        setRubyCompany(prevRuby => ({...prevRuby, difference: calc_difference.toFixed(2), history: truncatedHistory, cost: updatedCost}));
+        break;
+    };
+  };
+
+  useEffect(() => {
+    const stockIntervalId = setInterval(() => {
+      handleCompany(coalCompany);
+      handleCompany(mithrilCompany);
+      handleCompany(rubyCompany);
+    }, 1000);
+
+    return () => clearInterval(stockIntervalId);
+  });
+
+  function handleStock(company, amount, available, action) {
+
+    if (action === 'buy' 
+    && amount <= available 
+    && (amount * company.cost) <= currency
+    && amount > 0) {
+      switch (company) {
+
+        case coalCompany:
+          setCoalCompany(prevCoal => ({...prevCoal, 
+            possessed_stock: prevCoal.possessed_stock + amount,
+            }));
+          setCurrency(currency - (amount * company.cost));
+          break;
+
+        case mithrilCompany:
+          setMithrilCompany(prevMithril => ({...prevMithril, 
+            possessed_stock: prevMithril.possessed_stock + amount,
+            }));
+          setCurrency(currency - (amount * company.cost));
+          break;
+
+        default:
+          setRubyCompany(prevRuby => ({...prevRuby, 
+            possessed_stock: prevRuby.possessed_stock + amount,
+            }));
+          setCurrency(currency - (amount * company.cost));
+
+      };
+    }
+
+    if (action === 'sell' 
+    && amount <= company.possessed_stock
+    && amount > 0) {
+      switch (company) {
+
+        case coalCompany:
+          setCoalCompany(prevCoal => ({...prevCoal, 
+            possessed_stock: prevCoal.possessed_stock - amount,
+          }));
+          setCurrency(currency + (amount * company.cost));
+          break;
+
+        case mithrilCompany:
+          setMithrilCompany(prevMithril => ({...prevMithril, 
+            possessed_stock: prevMithril.possessed_stock - amount,
+          }));
+          setCurrency(currency + (amount * company.cost));
+          break;
+
+        default:
+          setRubyCompany(prevRuby => ({...prevRuby, 
+            possessed_stock: prevRuby.possessed_stock - amount,
+          }));
+          setCurrency(currency + (amount * company.cost));
+          break;
+
+      };
+  };
+};
 
 
   /* Worker */
@@ -207,26 +337,32 @@ function App() {
   return (
     <div className='main-box'>
 
-      <div className='shop-box'>
-        <h2>SHOP</h2>
-        <Shop handleUpgrade={handleUpgrade} handleShopToggle={handleShopToggle} shopToggle={shopToggle} pickaxe={pickaxe} drill={drill} worker={worker} ore={ore} />
+      <div className='shop-mine-stats'>
+        <div className='shop-box'>
+          <h2>SHOP</h2>
+          <Shop handleUpgrade={handleUpgrade} handleShopToggle={handleShopToggle} shopToggle={shopToggle} pickaxe={pickaxe} drill={drill} worker={worker} ore={ore} />
+        </div>
+
+        <div className='mine-box'>
+          <div className='mine'>
+            <h2>MINE</h2>
+            <Mines handleMining={handleMining} handleDrill={handleDrill} ore={ore} currency={currency} drill={drill} />
+          </div>
+          {drill.isBought && (
+          <div className='heat-meter'>
+            <HeatMeter drill={drill} />
+          </div>
+          )}
+        </div>
+
+        <div className='stats-box'>
+          <h2>STATS</h2>
+          <Stats pickaxe={pickaxe} drill={drill} worker={worker} ore={ore}/>
+        </div>
       </div>
 
-      <div className='mine-box'>
-        <div className='mine'>
-          <h2>MINE</h2>
-          <Mines handleMining={handleMining} handleDrill={handleDrill} ore={ore} currency={currency} drill={drill} />
-        </div>
-        {drill.isBought && (
-        <div className='heat-meter'>
-          <HeatMeter drill={drill} />
-        </div>
-        )}
-      </div>
-
-      <div className='stats-box'>
-        <h2>STATS</h2>
-        <Stats pickaxe={pickaxe} drill={drill} worker={worker} ore={ore}/>
+      <div className='stock-market'>
+          <StockMarket handleStock={handleStock} coalCompany={coalCompany} mithrilCompany={mithrilCompany} rubyCompany={rubyCompany} />
       </div>
       
     </div>
