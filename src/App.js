@@ -1,6 +1,6 @@
 // App.js
 import './App.css';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Shop from './components/Shop/Shop';
 import Mines from './components/Mines/Mines';
 import HeatMeter from './components/Mines/HeatMeter';
@@ -10,40 +10,6 @@ import StockMarket from './components/StockMarket/StockMarket';
 function App() {
   const [currency, setCurrency] = useState(100000000);
 
-  const [coalCompany, setCoalCompany] = useState({
-    name: 'Coal Co.',
-    token: 'coal',
-    total_stock: 100000,
-    unavailable_stock: 987,
-    possessed_stock: 1000,
-    difference: 0,
-    history: [],
-    cost: 25,
-  });
-
-  const [mithrilCompany, setMithrilCompany] = useState({
-    name: 'Mithril Brothers',
-    token: 'mithril',
-    total_stock: 100000,
-    unavailable_stock: 123,
-    possessed_stock: 1000,
-    difference: 0,
-    history: [],
-    cost: 50,
-  });
-
-  const [rubyCompany, setRubyCompany] = useState({
-    name: 'Ruby Corp.',
-    token: 'ruby',
-    total_stock: 100000,
-    unavailable_stock: 2983,
-    possessed_stock: 1000,
-    difference: 0,
-    history: [],
-    cost: 125,
-  });
-
-  const [shopToggle, setShopToggle] = useState(false);
   const [drill, setDrill] = useState({
     isBought: false,
     drill_cost: 10000,
@@ -79,274 +45,27 @@ function App() {
     progress: 0,
   });
 
-
-  /* Stock market */
-  function handleCompany(company) {
-    let x = 2;
-    const updatedHistory = [...company.history, company.cost];
-    const truncatedHistory = updatedHistory.slice(-10);
-    const updatedCost = company.cost + x;
-    const calc_difference = ((updatedCost - company.cost) / company.cost) * 100
-
-    switch (company) {
-
-      case coalCompany:
-        setCoalCompany(prevCoal => ({...prevCoal, difference: calc_difference.toFixed(2), history: truncatedHistory, cost: updatedCost}));
-        break;
-
-      case mithrilCompany:
-        setMithrilCompany(prevMithril => ({...prevMithril, difference: calc_difference.toFixed(2), history: truncatedHistory, cost: updatedCost}));
-        break;
-        
-      default:
-        setRubyCompany(prevRuby => ({...prevRuby, difference: calc_difference.toFixed(2), history: truncatedHistory, cost: updatedCost}));
-        break;
-    };
-  };
-
-  useEffect(() => {
-    const stockIntervalId = setInterval(() => {
-      handleCompany(coalCompany);
-      handleCompany(mithrilCompany);
-      handleCompany(rubyCompany);
-    }, 1000);
-
-    return () => clearInterval(stockIntervalId);
-  });
-
-  function handleStock(company, amount, available, action) {
-
-    if (action === 'buy' 
-    && amount <= available 
-    && (amount * company.cost) <= currency
-    && amount > 0) {
-      switch (company) {
-
-        case coalCompany:
-          setCoalCompany(prevCoal => ({...prevCoal, 
-            possessed_stock: prevCoal.possessed_stock + amount,
-            }));
-          setCurrency(currency - (amount * company.cost));
-          break;
-
-        case mithrilCompany:
-          setMithrilCompany(prevMithril => ({...prevMithril, 
-            possessed_stock: prevMithril.possessed_stock + amount,
-            }));
-          setCurrency(currency - (amount * company.cost));
-          break;
-
-        default:
-          setRubyCompany(prevRuby => ({...prevRuby, 
-            possessed_stock: prevRuby.possessed_stock + amount,
-            }));
-          setCurrency(currency - (amount * company.cost));
-
-      };
-    }
-
-    if (action === 'sell' 
-    && amount <= company.possessed_stock
-    && amount > 0) {
-      switch (company) {
-
-        case coalCompany:
-          setCoalCompany(prevCoal => ({...prevCoal, 
-            possessed_stock: prevCoal.possessed_stock - amount,
-          }));
-          setCurrency(currency + (amount * company.cost));
-          break;
-
-        case mithrilCompany:
-          setMithrilCompany(prevMithril => ({...prevMithril, 
-            possessed_stock: prevMithril.possessed_stock - amount,
-          }));
-          setCurrency(currency + (amount * company.cost));
-          break;
-
-        default:
-          setRubyCompany(prevRuby => ({...prevRuby, 
-            possessed_stock: prevRuby.possessed_stock - amount,
-          }));
-          setCurrency(currency + (amount * company.cost));
-          break;
-
-      };
-  };
-};
-
-
-  /* Worker */
-  /* Auto-mining */
-  useEffect(() => {
-    if (worker.level > 0) {
-      const miningIntervalId = setInterval(() => {
-        for (let i = 0; i < worker.level; i++) {
-          handleMining();
-        }
-      }, 1000 / worker.speed);
-
-      return () => clearInterval(miningIntervalId);
-    }
-  });
-
-
-  /* Drill mining */
-  /* onScroll version */
-  const handleDrill = () => {
-    if (drill.isBought && !drill.cooldown) {
-      setDrill(prevDrill => ({ ...prevDrill, heat: prevDrill.heat + 1 }));
-      handleMining();
-    }
-  };
-
-
-  /* Drill heat management */
-  useEffect(() => {
-    if (drill.heat > 0 && drill.heat < drill.heat_cap) {
-      const heatintervalId = setInterval(() => {
-        setDrill(prevDrill => ({
-          ...prevDrill,
-          heat: Math.max(0, prevDrill.heat - 1)
-        }));
-      }, 250 / drill.coolant);
-      return () => clearInterval(heatintervalId);
-      
-    } else {
-      // if drill overheats, set it on a cooldown
-      if (drill.heat >= drill.heat_cap) {
-        setDrill(prevDrill => ({
-          ...prevDrill,
-          cooldown: true,
-          heat: prevDrill.heat - 1 // prevents an infinite loop
-        }));
-      };
-    }
-
-    // once heat reaches 0 and drill is on cooldown, set cooldown to false
-    if (drill.heat === 0 && drill.cooldown) {
-      setDrill(prevDrill => ({
-        ...prevDrill,
-        cooldown: false
-      }));
-    }
-
-  }, [drill]);
-
-
-  /* Upgrades */
-  function handleUpgrade(cost, token) {
-    if (currency >= cost) {
-      setCurrency(currency - cost);
-
-      if (token === 'power') {
-        setPickaxe({ ...pickaxe, 
-          power: pickaxe.power + 1, 
-          power_cost: Math.round(pickaxe.power_cost * 1.15) 
-        });
-      }
-
-      if (token === 'multistrike') {
-        setPickaxe({ ...pickaxe, 
-          multistrike: pickaxe.multistrike + 1, 
-          multi_cost: Math.round(pickaxe.multi_cost * 1.15) 
-        });
-      }
-
-      if (token === 'drill') {
-        setDrill({...drill, 
-          isBought: true
-        });
-      }
-
-      if (token === 'coolant') {
-        setDrill({...drill, 
-          coolant: drill.coolant + 0.25,
-          coolant_cost: Math.round(drill.coolant_cost * 1.15)
-        });
-      }
-
-      if (token === 'heat_cap') {
-        setDrill({...drill, 
-          heat_cap: drill.heat_cap + 10,
-          heat_cap_cost: Math.round(drill.heat_cap_cost * 1.15)
-        });
-      }
-      
-      if (token === 'worker') {
-        setWorker({ ...worker, 
-          level: worker.level + 1, 
-          level_cost: Math.round(worker.level_cost * 1.15) 
-        });
-      }
-
-      if (token === 'speed') {
-        setWorker({ ...worker, 
-          speed: worker.speed + 0.1, 
-          speed_cost: Math.round(worker.speed_cost * 1.15) 
-        });
-      }
-
-      if (token === 'quality') {
-        setOre({ ...ore, 
-          quality: ore.quality * 1.175,
-          quality_cost: Math.round(ore.quality_cost * 1.15), 
-          hardness: ore.hardness * 1.15, 
-          progress: 0 
-        });
-      }
-
-      if (token === 'gems') {
-        setOre({ ...ore, 
-          gem_chance: ore.gem_chance + 0.25,
-          gem_cost: Math.round(ore.gem_cost * 1.15), 
-        });
-      }
-
-    }
-  }
-
-  /* Turns on and off the ability to buy stuff using your mouse scroll */
-  function handleShopToggle() {
-    setShopToggle(!shopToggle);
-  }
-
-  /* Mining */
-  function handleMining() {
-    setOre(prevOre => ({ ...prevOre, progress: prevOre.progress + (pickaxe.power * pickaxe.multistrike) }));
-    if (Math.floor(Math.random() * 100) <= ore.gem_chance) {
-      setCurrency(currency + ore.quality / 2);
-    }
-    if (ore.progress >= ore.hardness) {
-      for (let i = 0; i < ore.progress; i = i + ore.hardness) {
-        setCurrency(currency + ore.quality);
-      }
-      setOre(prevOre => ({ ...prevOre, progress: prevOre.progress - ore.hardness }));
-    }
-  }
-
-  /* Checks if you have finished mining the ore */
-  useEffect(() => {
-    if (ore.progress >= ore.hardness) {
-      setCurrency(currency + ore.quality);
-      setOre({...ore, progress: ore.progress - ore.hardness})
-    }
-  }, [currency, ore]
-  );
-
   return (
     <div className='main-box'>
 
       <div className='shop-mine-stats'>
         <div className='shop-box'>
           <h2>SHOP</h2>
-          <Shop handleUpgrade={handleUpgrade} handleShopToggle={handleShopToggle} shopToggle={shopToggle} pickaxe={pickaxe} drill={drill} worker={worker} ore={ore} />
+          <Shop pickaxe={pickaxe} setPickaxe={setPickaxe}
+                drill={drill} setDrill={setDrill}
+                worker={worker} setWorker={setWorker}
+                ore={ore} setOre={setOre}
+                currency={currency} setCurrency={setCurrency} />
         </div>
 
         <div className='mine-box'>
           <div className='mine'>
             <h2>MINE</h2>
-            <Mines handleMining={handleMining} handleDrill={handleDrill} ore={ore} currency={currency} drill={drill} />
+            <Mines pickaxe={pickaxe} 
+                   drill={drill} setDrill={setDrill} 
+                   worker={worker} 
+                   ore={ore} setOre={setOre} 
+                   currency={currency} setCurrency={setCurrency} />
           </div>
           {drill.isBought && (
           <div className='heat-meter'>
@@ -357,12 +76,15 @@ function App() {
 
         <div className='stats-box'>
           <h2>STATS</h2>
-          <Stats pickaxe={pickaxe} drill={drill} worker={worker} ore={ore}/>
+          <Stats pickaxe={pickaxe}
+                 drill={drill}
+                 worker={worker}
+                 ore={ore}/>
         </div>
       </div>
 
       <div className='stock-market'>
-          <StockMarket handleStock={handleStock} coalCompany={coalCompany} mithrilCompany={mithrilCompany} rubyCompany={rubyCompany} />
+          <StockMarket currency={currency} setCurrency={setCurrency} />
       </div>
       
     </div>

@@ -8,20 +8,27 @@ function StockListing({ company, handleStock }) {
     const market_share = (company.possessed_stock / company.total_stock) * 100;
     const amount_buy = useRef(null);
     const amount_sell = useRef(null);
+    const arrowUp = '▲ ';
+    const arrowDown = '▼ '; // I tried ASCII and Unicode, but I couldn't make it safely work.
+
 
     const handleBuyClick = () => {
-        handleStock(company, amount_buy.current.value, available_stock, 'buy');
+        const amount = parseInt(amount_buy.current.value, 10); // Parse as an integer
+        handleStock(company, amount, available_stock, 'buy');
     };
 
     const handleSellClick = () => {
-        handleStock(company, amount_sell.current.value, available_stock, 'sell');
+        const amount = parseInt(amount_sell.current.value, 10); // Same here
+        handleStock(company, amount, available_stock, 'sell');
     };
 
     return (
         <>
         <td>{company.name}</td>
         <td>{company.cost}</td>
-        <td>{company.difference}</td>
+        <td className={company.difference > 0 ? ('positive') : ('negative')}>
+            {company.difference > 0 ? (arrowUp + company.difference) : (arrowDown + company.difference)}%
+        </td>
         <td>
             <input type='number' ref={amount_buy} id={company.token} min='1' max={available_stock} />
             <button onClick={handleBuyClick}>Buy</button>

@@ -1,10 +1,165 @@
 // components/StockMarket/StockMarket.jsx
 import './StockMarket.css';
 import StockListing from './StockListing';
+import { useState, useEffect } from 'react';
 // import { Chart as ChartJS } from 'chart.js/auto';
 // import { Bar, Doghnut, Line } from 'react-chartjs-2';
 
-function StockMarket({ handleStock, coalCompany, mithrilCompany, rubyCompany }) {
+function StockMarket({ currency, setCurrency }) {
+
+  const [coalCompany, setCoalCompany] = useState({
+    name: 'Coal Co.',
+    token: 'coal',
+    total_stock: 100000,
+    unavailable_stock: 79286,
+    possessed_stock: 0,
+    difference: 0,
+    prev_difference: 1,
+    consecutive_growth: 0,
+    history: [],
+    cost: 25,
+  });
+  
+  const [mithrilCompany, setMithrilCompany] = useState({
+    name: 'Mithril Brothers',
+    token: 'mithril',
+    total_stock: 100000,
+    unavailable_stock: 69212,
+    possessed_stock: 0,
+    difference: 0,
+    prev_difference: 1,
+    consecutive_growth: 0,
+    history: [],
+    cost: 50,
+  });
+  
+  const [rubyCompany, setRubyCompany] = useState({
+    name: 'Ruby & Rubenson',
+    token: 'ruby',
+    total_stock: 100000,
+    unavailable_stock: 57974,
+    possessed_stock: 0,
+    difference: 0,
+    prev_difference: 1,
+    consecutive_growth: 0,
+    history: [],
+    cost: 125,
+  });
+
+
+  /* Stock market */
+  function handleCompany(company) {
+
+    let mainMultiplier = company.prev_difference;
+    let wildCard = 0;
+
+    const updatedHistory = [...company.history, company.cost];
+    const truncatedHistory = updatedHistory.slice(-10);
+    const updatedCost = Math.round(company.cost * mainMultiplier + wildCard);
+    const calc_difference = ((updatedCost - company.cost) / company.cost) * 100;
+    //console.log(mainMultiplier);
+
+    if (mainMultiplier >= 1.015) {
+      const diceRoll = Math.floor(Math.random() * 10);
+      if (diceRoll < company.consecutive_growth) {
+        mainMultiplier = mainMultiplier + (Math.floor(Math.random() * 5) / 100);
+      } else {
+        mainMultiplier = 1;
+        mainMultiplier = mainMultiplier - (Math.floor(Math.random() * 5) / 100);
+      }
+    }
+
+    switch (company.token) {
+
+      case 'coal':
+        setCoalCompany(prevCoal => ({...prevCoal, difference: calc_difference.toFixed(2), history: truncatedHistory, cost: updatedCost}));
+        break;
+
+      case 'mithril':
+        setMithrilCompany(prevMithril => ({...prevMithril, difference: calc_difference.toFixed(2), history: truncatedHistory, cost: updatedCost}));
+        break;
+        
+      case 'ruby':
+        setRubyCompany(prevRuby => ({...prevRuby, difference: calc_difference.toFixed(2), history: truncatedHistory, cost: updatedCost}));
+        break;
+
+      default:
+        break;
+    };
+  };
+
+
+  useEffect(() => {
+    const stockIntervalId = setInterval(() => {
+      handleCompany(coalCompany);
+      handleCompany(mithrilCompany);
+      handleCompany(rubyCompany);
+    }, 100000);
+
+    return () => clearInterval(stockIntervalId);
+  }, [coalCompany, mithrilCompany, rubyCompany]);
+
+
+  function handleStock(company, amount, available, action) {
+    if (action === 'buy' 
+    && amount <= available 
+    && (amount * company.cost) <= currency
+    && amount > 0) {
+      switch (company) {
+
+        case coalCompany:
+          setCoalCompany(prevCoal => ({...prevCoal, 
+            possessed_stock: prevCoal.possessed_stock + amount,
+            }));
+          setCurrency(currency - (amount * company.cost));
+          break;
+
+        case mithrilCompany:
+          setMithrilCompany(prevMithril => ({...prevMithril, 
+            possessed_stock: prevMithril.possessed_stock + amount,
+            }));
+          setCurrency(currency - (amount * company.cost));
+          break;
+
+        default:
+          setRubyCompany(prevRuby => ({...prevRuby, 
+            possessed_stock: prevRuby.possessed_stock + amount,
+            }));
+          setCurrency(currency - (amount * company.cost));
+
+      };
+    }
+
+    if (action === 'sell' 
+    && amount <= company.possessed_stock
+    && amount > 0) {
+      switch (company) {
+
+        case coalCompany:
+          setCoalCompany(prevCoal => ({...prevCoal, 
+            possessed_stock: prevCoal.possessed_stock - amount,
+          }));
+          setCurrency(currency + (amount * company.cost));
+          break;
+
+        case mithrilCompany:
+          setMithrilCompany(prevMithril => ({...prevMithril, 
+            possessed_stock: prevMithril.possessed_stock - amount,
+          }));
+          setCurrency(currency + (amount * company.cost));
+          break;
+
+        default:
+          setRubyCompany(prevRuby => ({...prevRuby, 
+            possessed_stock: prevRuby.possessed_stock - amount,
+          }));
+          setCurrency(currency + (amount * company.cost));
+          break;
+
+      };
+    };
+  };
+
   return (
     <table className='stock-market-table'>
       <tbody>
