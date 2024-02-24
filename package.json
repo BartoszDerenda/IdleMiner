@@ -1,7 +1,7 @@
 {
   "name": "sandbox",
   "version": "0.1.0",
-  "homepage": "https://gitname.github.io/react-gh-pages",
+  "homepage": "https://bartoszderenda.github.io/IdleMiner/",
   "private": true,
   "dependencies": {
     "@craco/craco": "^7.1.0",
