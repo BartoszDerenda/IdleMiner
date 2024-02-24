@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/IdleMiner/static/css/main.a0afa408.css",
-    "main.js": "/IdleMiner/static/js/main.0388e213.js",
-    "index.html": "/IdleMiner/index.html",
-    "main.a0afa408.css.map": "/IdleMiner/static/css/main.a0afa408.css.map",
-    "main.0388e213.js.map": "/IdleMiner/static/js/main.0388e213.js.map"
+    "main.css": "/idle-miner/static/css/main.a0afa408.css",
+    "main.js": "/idle-miner/static/js/main.0388e213.js",
+    "index.html": "/idle-miner/index.html",
+    "main.a0afa408.css.map": "/idle-miner/static/css/main.a0afa408.css.map",
+    "main.0388e213.js.map": "/idle-miner/static/js/main.0388e213.js.map"
   },
   "entrypoints": [
     "static/css/main.a0afa408.css",
