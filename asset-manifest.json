@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/IdleMiner/static/css/main.a0afa408.css",
+    "main.js": "/IdleMiner/static/js/main.0388e213.js",
+    "index.html": "/IdleMiner/index.html",
+    "main.a0afa408.css.map": "/IdleMiner/static/css/main.a0afa408.css.map",
+    "main.0388e213.js.map": "/IdleMiner/static/js/main.0388e213.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a0afa408.css",
+    "static/js/main.0388e213.js"
+  ]
+}
