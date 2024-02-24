@@ -17,7 +17,7 @@ function StockMarket({ currency, setCurrency }) {
     prev_difference: 1,
     consecutive_growth: 0,
     history: [],
-    cost: 25,
+    cost: 1250,
   });
   
   const [mithrilCompany, setMithrilCompany] = useState({
@@ -30,11 +30,11 @@ function StockMarket({ currency, setCurrency }) {
     prev_difference: 1,
     consecutive_growth: 0,
     history: [],
-    cost: 50,
+    cost: 5000,
   });
   
   const [rubyCompany, setRubyCompany] = useState({
-    name: 'Ruby & Rubenson',
+    name: 'Ruby & Rubinson',
     token: 'ruby',
     total_stock: 100000,
     unavailable_stock: 57974,
@@ -43,7 +43,7 @@ function StockMarket({ currency, setCurrency }) {
     prev_difference: 1,
     consecutive_growth: 0,
     history: [],
-    cost: 125,
+    cost: 6300,
   });
 
 
@@ -57,30 +57,44 @@ function StockMarket({ currency, setCurrency }) {
     const truncatedHistory = updatedHistory.slice(-10);
     const updatedCost = Math.round(company.cost * mainMultiplier + wildCard);
     const calc_difference = ((updatedCost - company.cost) / company.cost) * 100;
-    //console.log(mainMultiplier);
+    console.log(mainMultiplier);
 
+    const diceRoll = Math.floor(Math.random() * 10);
     if (mainMultiplier >= 1.015) {
-      const diceRoll = Math.floor(Math.random() * 10);
       if (diceRoll < company.consecutive_growth) {
-        mainMultiplier = mainMultiplier + (Math.floor(Math.random() * 5) / 100);
-      } else {
-        mainMultiplier = 1;
-        mainMultiplier = mainMultiplier - (Math.floor(Math.random() * 5) / 100);
+        mainMultiplier = mainMultiplier + (Math.floor(Math.random() * 50) / 1000);
+      }
+    } else {
+      mainMultiplier = 1;
+      if (diceRoll < company.consecutive_growth) {
+        mainMultiplier = mainMultiplier - (Math.floor(Math.random() * 50) / 1000);
       }
     }
 
     switch (company.token) {
 
       case 'coal':
-        setCoalCompany(prevCoal => ({...prevCoal, difference: calc_difference.toFixed(2), history: truncatedHistory, cost: updatedCost}));
+        setCoalCompany(prevCoal => ({...prevCoal,
+          difference: calc_difference.toFixed(2),
+          history: truncatedHistory,
+          prev_difference: mainMultiplier,
+          cost: updatedCost}));
         break;
 
       case 'mithril':
-        setMithrilCompany(prevMithril => ({...prevMithril, difference: calc_difference.toFixed(2), history: truncatedHistory, cost: updatedCost}));
+        setMithrilCompany(prevMithril => ({...prevMithril,
+          difference: calc_difference.toFixed(2),
+          history: truncatedHistory,
+          prev_difference: mainMultiplier,
+          cost: updatedCost}));
         break;
         
       case 'ruby':
-        setRubyCompany(prevRuby => ({...prevRuby, difference: calc_difference.toFixed(2), history: truncatedHistory, cost: updatedCost}));
+        setRubyCompany(prevRuby => ({...prevRuby,
+          difference: calc_difference.toFixed(2),
+          history: truncatedHistory,
+          prev_difference: mainMultiplier,
+          cost: updatedCost}));
         break;
 
       default:
@@ -94,7 +108,7 @@ function StockMarket({ currency, setCurrency }) {
       handleCompany(coalCompany);
       handleCompany(mithrilCompany);
       handleCompany(rubyCompany);
-    }, 100000);
+    }, 1000);
 
     return () => clearInterval(stockIntervalId);
   }, [coalCompany, mithrilCompany, rubyCompany]);
