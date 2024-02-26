@@ -14,10 +14,9 @@ function StockMarket({ currency, setCurrency }) {
     unavailable_stock: 79286,
     possessed_stock: 0,
     difference: 0,
-    prev_difference: 1,
-    consecutive_growth: 0,
+    direction: true,
     history: [],
-    cost: 1250,
+    cost: 1300,
   });
   
   const [mithrilCompany, setMithrilCompany] = useState({
@@ -27,10 +26,9 @@ function StockMarket({ currency, setCurrency }) {
     unavailable_stock: 69212,
     possessed_stock: 0,
     difference: 0,
-    prev_difference: 1,
-    consecutive_growth: 0,
+    direction: true,
     history: [],
-    cost: 5000,
+    cost: 3900,
   });
   
   const [rubyCompany, setRubyCompany] = useState({
@@ -40,36 +38,30 @@ function StockMarket({ currency, setCurrency }) {
     unavailable_stock: 57974,
     possessed_stock: 0,
     difference: 0,
-    prev_difference: 1,
-    consecutive_growth: 0,
+    direction: true,
     history: [],
-    cost: 6300,
+    cost: 6400,
   });
 
 
   /* Stock market */
   function handleCompany(company) {
 
-    let mainMultiplier = company.prev_difference;
-    let wildCard = 0;
+    const growthFactor = 1.01 + (Math.random() * 0.04); // Random growth factor between 1% - 5%
+    const declineFactor = 1.01 - (Math.random() * 0.04);
 
     const updatedHistory = [...company.history, company.cost];
     const truncatedHistory = updatedHistory.slice(-10);
-    const updatedCost = Math.round(company.cost * mainMultiplier + wildCard);
-    const calc_difference = ((updatedCost - company.cost) / company.cost) * 100;
-    console.log(mainMultiplier);
 
-    const diceRoll = Math.floor(Math.random() * 10);
-    if (mainMultiplier >= 1.015) {
-      if (diceRoll < company.consecutive_growth) {
-        mainMultiplier = mainMultiplier + (Math.floor(Math.random() * 50) / 1000);
-      }
-    } else {
-      mainMultiplier = 1;
-      if (diceRoll < company.consecutive_growth) {
-        mainMultiplier = mainMultiplier - (Math.floor(Math.random() * 50) / 1000);
-      }
-    }
+    let updatedCost = company.cost * (company.direction ? growthFactor : declineFactor);
+
+    updatedCost = Math.max(updatedCost, 0);
+    const calc_difference = ((updatedCost - company.cost) / company.cost) * 100;
+
+    // Update direction based on a random chance
+    const changeDirectionChance = 0.2; // 20% chance to change direction
+    const shouldChangeDirection = Math.random() < changeDirectionChance;
+    const direction = shouldChangeDirection ? !company.direction : company.direction;
 
     switch (company.token) {
 
@@ -77,24 +69,24 @@ function StockMarket({ currency, setCurrency }) {
         setCoalCompany(prevCoal => ({...prevCoal,
           difference: calc_difference.toFixed(2),
           history: truncatedHistory,
-          prev_difference: mainMultiplier,
-          cost: updatedCost}));
+          direction: direction,
+          cost: updatedCost.toFixed()}));
         break;
 
       case 'mithril':
         setMithrilCompany(prevMithril => ({...prevMithril,
           difference: calc_difference.toFixed(2),
           history: truncatedHistory,
-          prev_difference: mainMultiplier,
-          cost: updatedCost}));
+          direction: direction,
+          cost: updatedCost.toFixed()}));
         break;
         
       case 'ruby':
         setRubyCompany(prevRuby => ({...prevRuby,
           difference: calc_difference.toFixed(2),
           history: truncatedHistory,
-          prev_difference: mainMultiplier,
-          cost: updatedCost}));
+          direction: direction,
+          cost: updatedCost.toFixed()}));
         break;
 
       default:
